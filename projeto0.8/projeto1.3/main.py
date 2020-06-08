@@ -1,4 +1,4 @@
-from xo_doenca import Jogo
+from vac import Jogo
 
 
 jogo = Jogo()
