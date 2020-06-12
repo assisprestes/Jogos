@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 from pygame.sprite import groupcollide
 from random import randint
+from animacao import Animacao
 
 # Classe fabrica vírus
 class Virus(Sprite):
@@ -20,13 +21,9 @@ class Virus(Sprite):
         self.tipo = tipo_virus
         # Retangulo do projetil
         self.rect = pygame.Rect(0, 0, self.largura, self.altura)
-        # Carrega imagen do virus
-        self.image = pygame.image.load('imagens/virus/'+ self.tipo + '.png')
 
-        self.image = pygame.transform.scale(self.image, (self.largura, self.altura))
-        self.rect = self.image.get_rect()
         self.dimensao_tela = screen.get_rect().bottomright
-        
+
         self.CIMA = 0
         self.CIMA_DIREITA = 1
         self.DIREITA = 2
@@ -35,20 +32,39 @@ class Virus(Sprite):
         self.BAIXO_ESQUERDA = 5
         self.ESQUERDA = 6
         self.ESQUERDA_CIMA = 7
-        
+
         self.direcao = self.CIMA # 0 -> cima, 1 -> cima_direita, 2 -> direita, 3 -> baixo_direita
                          # 4 -> baixo, 5 -> baixo_esquerda, 6 esquerda, 7 esquerda_cima
 
         if tipo_virus == "virus1":
+                self.animacao = Animacao('./imagens/virus/Virus00', self.screen, self.largura, self.altura)
+                # Carrega imagen do virus
+                self.image = self.animacao.get_imagem()
+
                 self.speed = self.ai_settings.speed1 * self.estado_jogo.nivel
         elif tipo_virus == "virus2":
+                self.animacao = Animacao('./imagens/virus/Virus01', self.screen, self.largura, self.altura)
+                # Carrega imagen do virus
+                self.image = self.animacao.get_imagem()
                 self.speed = self.ai_settings.speed2 * self.estado_jogo.nivel
         elif tipo_virus == "virus3":
+                self.animacao = Animacao('./imagens/virus/Virus02', self.screen, self.largura, self.altura)
+                # Carrega imagen do virus
+                self.image = self.animacao.get_imagem()
                 self.speed = self.ai_settings.speed3 * self.estado_jogo.nivel
         elif tipo_virus == "virus4":
+                self.animacao = Animacao('./imagens/virus/Virus03', self.screen, self.largura, self.altura)
+                # Carrega imagen do virus
+                self.image = self.animacao.get_imagem()
                 self.speed = self.ai_settings.speed4 * self.estado_jogo.nivel
 
+        self.image = pygame.transform.scale(self.image, (self.largura, self.altura))
+
+        self.rect = self.image.get_rect()
+
     def update(self):
+        self.animacao.update()
+        self.image = self.animacao.get_imagem()
             #colisao com a esquerda
         if self.rect.centerx < 0:
             self.update_direcao(1, 3)
@@ -65,7 +81,7 @@ class Virus(Sprite):
     def update_direcao(self, valor_minimo, valor_maximo):
         """ Define uma nova posição aleatoria."""
         self.direcao = randint(valor_minimo, valor_maximo)
-    
+
     def mover(self):
             # cima
             if self.direcao == self.CIMA:

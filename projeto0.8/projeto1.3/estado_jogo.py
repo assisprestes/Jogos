@@ -1,8 +1,9 @@
 import game_functions as gf
 
 class EstadoJogo():
-    
-    def __init__(self, ai_settings, viroses, screen, painel_vacina, barra_tempo):
+
+    def __init__(self, ai_settings, viroses, screen, painel_vacina, barra_tempo, atualiza_movimento):
+        self.atualiza_movimento = atualiza_movimento
         self.ai_settings = ai_settings
         self.pontos = 0
         self.fullscreen = False
@@ -20,9 +21,10 @@ class EstadoJogo():
 
     def estado_reset(self):
         self.pontos = 0
-    
+
     def next_nivel(self):
         if not self.viroses.__len__():
+            self.barra_tempo.tamanho_barra = self.barra_tempo.tamanho_maximo
             self.nivel += 1
             for virus in self.viroses:
                 if virus.tipo == "virus1":

@@ -1,16 +1,17 @@
 class Ranking():
-    def __init__(self, bd_score):
+    def __init__(self, bd_score, nome_player):
         self.ranking = open(bd_score, '+a')
         self.pontos_ordenados = None
+        self.nome_player = nome_player
 
-    def add_score(self, nome, pontos):
+    def add_score(self, pontos):
         if pontos > 0:
             rank = self.get_ranking()
             if len(rank) < 10:
-                self.ranking.write(nome + "\n")
+                self.ranking.write(self.nome_player + "\n")
                 self.ranking.write(str(pontos) + "\n")
             elif pontos >= self.pontos_ordenados[-1]:
-                self.add_score_tupla({1: 'ok', 0: 'lol'})
+                self.add_score_tupla({1: 'ok', 0: 'lol'}) #<------# p/ organizar
 
     def get_ranking(self):
         rank = {}

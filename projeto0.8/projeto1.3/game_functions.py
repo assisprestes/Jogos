@@ -122,13 +122,17 @@ def checar_mouse_motion(event, mira, mira_colisor):
 
 
 def checar_mouse_botao(event, painel_vacina, miras, viroses, grupo_virose, estado_jogo, pontuacao_placar, ai_settings,
-                       barra_tempo):
+                       barra_tempo, sons):
     # Verifica se roleta  foi posicionado para cima
+
     if event.button == pygame.MOUSEBUTTONDOWN or event.button == 3:
         painel_vacina.vacina_selecionada += 1
+        sons.troca_vacinas.play()
     elif event.button == pygame.MOUSEMOTION:
         painel_vacina.vacina_selecionada -= 1
+        sons.troca_vacinas.play()
     elif event.button == pygame.BUTTON_LEFT:
+        sons.click.play()
         if painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina1'):
             check_colision_virus1(miras, grupo_virose[painel_vacina.vacinas.index('vacina1') - 1], estado_jogo,
                                   pontuacao_placar, ai_settings, barra_tempo)
@@ -147,7 +151,7 @@ def checar_mouse_botao(event, painel_vacina, miras, viroses, grupo_virose, estad
 
 def check_events(ai_settings, screen, mira, mira_colisor, painel_vacina, miras, viroses, grupos_viroses, estado_jogo,
                  pontuacao_placar, barra_tempo, play_botao,
-                 atualiza_movimento, atualiza_barra_tempo, ranking_botao, ranking_bd):
+                 atualiza_movimento, atualiza_barra_tempo, ranking_botao, ranking_bd, sons, vetor_botoes):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
@@ -159,15 +163,15 @@ def check_events(ai_settings, screen, mira, mira_colisor, painel_vacina, miras, 
             checar_mouse_motion(event, mira, mira_colisor)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             checar_mouse_botao(event, painel_vacina, miras, viroses, grupos_viroses, estado_jogo, pontuacao_placar,
-                               ai_settings, barra_tempo)
+                               ai_settings, barra_tempo, sons)
             # Verifica se iniciar foi clicado
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_inicial_button(estado_jogo, play_botao, mouse_x, mouse_y, atualiza_movimento, atualiza_barra_tempo,
-                                 ranking_botao, ranking_bd, screen, viroses, barra_tempo, ai_settings)
+            check_buttons(estado_jogo, play_botao, mouse_x, mouse_y, atualiza_movimento, atualiza_barra_tempo,
+                          ranking_botao, ranking_bd, screen, viroses, barra_tempo, ai_settings, vetor_botoes)
 
 
 def update_screen(ai_settings, screen, mira, painel_vacina, viroses, miras, background, pontuacao_placar, barra_tempo,
-                  play_botao):
+                  play_botao, ranking_botao):
     """Atualiza imagen na tela"""
     screen.fill(ai_settings.bg_color)
     if ai_settings.background_visivel:
@@ -181,6 +185,12 @@ def update_screen(ai_settings, screen, mira, painel_vacina, viroses, miras, back
     pontuacao_placar.mostra_pontos()
     mira.blitme()
     painel_vacina.desenha_painel_vacina(ai_settings, screen)
+
+    if play_botao.is_visivel:
+        play_botao.draw_botao()
+
+    if ranking_botao.is_visivel:
+        ranking_botao.draw_botao()
     # play_botao.draw_botao()
 
 
@@ -196,20 +206,23 @@ def update_logica(ai_settings, viroses, painel_vacina, barra_tempo, mira, estado
     painel_vacina.update(ai_settings)
 
 
-def mostra_tela_game_over(screen, estado_jogo):
+def mostra_tela_game_over(screen, estado_jogo, play_botao, ranking_botao):
+    play_botao.is_visivel = True
     screen.fill((200, 100, 100), screen.get_rect())
+    if play_botao.is_visivel:
+        play_botao.draw_botao()
     centery = screen.get_rect().centery - 80
     desenha_texto.texto(screen, "FIM DE JOGO", (screen.get_rect().centerx, centery), (255, 0, 0), 100)
     desenha_texto.texto(screen, "pontos: " + str(estado_jogo.pontos), (screen.get_rect().centerx, centery + 100),
                         (0, 0, 0), 60)
 
 
-def is_fim_jogo(barra_tempo, estado_jogo, ranking_bd, screen):
+def is_fim_jogo(barra_tempo, estado_jogo, ranking_bd, screen, play_botao, ranking_botao):
     if barra_tempo.barra_vazia:
         if estado_jogo.jogo_estado:
-            ranking_bd.add_score('PLAYER', estado_jogo.pontos)  # <-----------
+            ranking_bd.add_score( estado_jogo.pontos)  # <-----------
         estado_jogo.jogo_estado = False
-        mostra_tela_game_over(screen, estado_jogo)
+        mostra_tela_game_over(screen, estado_jogo, play_botao, ranking_botao)
         # ranking_tela(ranking_bd, screen)
         # sys.exit()
 
@@ -221,7 +234,6 @@ def ranking_tela(ranking_bd, screen, ai_settings):
     background = pygame.image.load('imagens/background/ranking_tela.jpg')
     rect = pygame.Rect(0 , 0, ai_settings.screen_width, ai_settings.screen_height  )#Inconsistencia
     rect.centerx = 650#int(screen.get_rect()[2]/2)
-    print(int(screen.get_rect()[2]/2))
     screen.blit(background, rect)
     rank = ranking_bd.get_ranking()
     desenha_texto.texto(screen, "Ranking", (screen.get_rect().centerx, 60), (0, 255, 0), 100)
@@ -232,24 +244,16 @@ def ranking_tela(ranking_bd, screen, ai_settings):
         desenha_texto.texto(screen, str(i) + ": " + str(posicao) + "   " + rank[posicao],
                             (screen.get_rect().centerx, (i * 50) + 120), (0, 0, 0), 50)
         i += 1
+    print('Posição: ', rank)
 
-def check_inicial_button(estado_jogo, play_botao, mouse_x, mouse_y, atualiza_movimento, atualiza_barra_tempo,
-                         ranking_botao, ranking_bd, screen, viroses, barra_tempo, ai_settings):
-    """Inicia um novo jogo quando o jogador clicar em Play."""
-    if play_botao.rect.collidepoint(mouse_x, mouse_y):
-        if not estado_jogo.jogo_estado:
-            try:
-                atualiza_movimento.start()
-                atualiza_barra_tempo.start()
-            except:
-                atualiza_movimento = UpMovVirus(viroses)
-                atualiza_barra_tempo = UpMovVirus(viroses)
-                reseta_jogo(barra_tempo, estado_jogo)
-        estado_jogo.jogo_estado = True
-    """Inicia um novo jogo quando o jogador clicar em Play."""
-    if ranking_botao.rect.collidepoint(mouse_x, mouse_y) and not estado_jogo.jogo_estado:
-        ranking_botao.flag_click = True
-        ranking_tela(ranking_bd, screen, ai_settings)
+
+def check_buttons(estado_jogo, play_botao, mouse_x, mouse_y, atualiza_movimento, atualiza_barra_tempo,
+                  ranking_botao, ranking_bd, screen, viroses, barra_tempo, ai_settings, vetor_botoes):
+    for botao in vetor_botoes:
+        if botao.rect.collidepoint(mouse_x, mouse_y) and botao.ativo:
+            botao.funcao_call_back()
+
+
 
 def reseta_jogo(barra_tempo, estado_jogo):
     barra_tempo.tamanho_barra = barra_tempo.tamanho_maximo

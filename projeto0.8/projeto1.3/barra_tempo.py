@@ -15,7 +15,7 @@ class Barra_tempo(Sprite):
         self.color = (0, 255, 0)
         self.fator_divisao_barra = self.tamanho_barra / 3
         self.barra_vazia = False
-        self.fator_decressimo = 0.025 # Valor em segundos.
+        self.fator_decressimo = 0.0125 # Valor em segundos. Quanto menor mais rapido a barra acaba
 
     def atualiza_barra(self):
         if self.tamanho_barra > 0:
@@ -25,7 +25,7 @@ class Barra_tempo(Sprite):
 
         self.rect = pygame.Rect(300, 0, self.tamanho_barra, 20)
         self.rect.centery = 35
-        
+
         if self.tamanho_barra < (self.fator_divisao_barra * 2) and self.tamanho_barra > self.fator_divisao_barra:
             self.color = ( 255, 255, 0)
         elif self.tamanho_barra < self.fator_divisao_barra:

@@ -1,6 +1,9 @@
 import pygame.font
 class Botao():
-    def __init__(self, ai_settings, screen, msg):
+    def __init__(self, ai_settings, screen, msg, funcao_call_back):
+        self.ativo = True
+        self.is_visivel = True
+        self.funcao_call_back = funcao_call_back
         """Inicializa os atributos do botão."""
         self.screen = screen
         self.screen_rect = screen.get_rect()

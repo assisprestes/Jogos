@@ -19,23 +19,23 @@ class Painel_vacina(Sprite):
 
 
         #Load imagem das vacinas
-        self.vacina_1 = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina1.png')
+        self.vacina_1 = pygame.image.load('imagens/vacinas/vacina1.png')
         self.vacina_1 = pygame.transform.scale(self.vacina_1, ai_settings.painel_tamanho_vacina)
         self.vacina_1 = pygame.transform.rotate(self.vacina_1, 45)
         self.fator_sel_vacina1 = 0
 
-        self.vacina_2 = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina2.png')
+        self.vacina_2 = pygame.image.load('imagens/vacinas/vacina2.png')
         self.vacina_2 = pygame.transform.scale(self.vacina_2, ai_settings.painel_tamanho_vacina)
         self.vacina_2 = pygame.transform.rotate(self.vacina_2, 45)
         self.fator_sel_vacina2 = 0
 
-        self.vacina_3 = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina3.png')
+        self.vacina_3 = pygame.image.load('imagens/vacinas/vacina3.png')
         self.vacina_3 = pygame.transform.scale(self.vacina_3, ai_settings.painel_tamanho_vacina)
         self.vacina_3 = pygame.transform.rotate(self.vacina_3, 45)
         self.fator_sel_vacina3 = 0
 
 
-        self.vacina_4 = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina4.png')
+        self.vacina_4 = pygame.image.load('imagens/vacinas/vacina4.png')
         self.vacina_4 = pygame.transform.scale(self.vacina_4, ai_settings.painel_tamanho_vacina)
         self.vacina_4 = pygame.transform.rotate(self.vacina_4, 45)
         self.fator_sel_vacina4 = 0

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='vac',
+    name='xo_doenca',
     version='1.0',
     packages=[''],
     url='',

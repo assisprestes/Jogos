@@ -8,10 +8,10 @@ class Mira(Sprite):
         self.ai_settings = ai_settings
         self.screen = screen
         #Load imagem
-        self.image = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/outros/mira.png')
+        self.image = pygame.image.load('imagens/outros/mira.png')
         self.image = pygame.transform.scale(self.image, self.ai_settings.mira_tamanho)
 
-        self.image_seringa = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina1.png')
+        self.image_seringa = pygame.image.load('imagens/vacinas/vacina1.png')
         self.image_seringa = pygame.transform.scale(self.image_seringa, self.ai_settings.mira_tamanho)
         self.rect_seringa = self.image_seringa.get_rect()
 
@@ -38,13 +38,13 @@ class Mira(Sprite):
         vacina_selecionada = self.painel_vacina.vacina_selecionada
 
         if vacina_selecionada == 0:
-            self.image_seringa = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina1.png')
+            self.image_seringa = pygame.image.load('imagens/vacinas/vacina1.png')
         elif vacina_selecionada == 1:
-            self.image_seringa = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina2.png')
+            self.image_seringa = pygame.image.load('imagens/vacinas/vacina2.png')
         elif vacina_selecionada == 2:
-            self.image_seringa = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina3.png')
+            self.image_seringa = pygame.image.load('imagens/vacinas/vacina3.png')
         elif vacina_selecionada == 3:
-            self.image_seringa = pygame.image.load(r'C:\temp\jogo\projeto0.8\projeto1.3\imagens/vacinas/vacina4.png')
+            self.image_seringa = pygame.image.load('imagens/vacinas/vacina4.png')
 
         self.image_seringa = pygame.transform.scale(self.image_seringa, self.ai_settings.mira_tamanho)
         self.rect_seringa = self.image_seringa.get_rect()
