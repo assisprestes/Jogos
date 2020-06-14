@@ -1,5 +1,5 @@
 import sys
-from xo_doenca import Jogo
+from vac import Jogo
 # from teste import Teste_ranking
 
 
