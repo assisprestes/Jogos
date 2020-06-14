@@ -2,7 +2,7 @@ class Settings:
     def __init__(self):
         """Classe para armazenar configuraçõesa"""
         self.screen_width = 1024
-        self.screen_height = 760
+        self.screen_height = 600
         self.bg_color = (200, 100, 100)
         """configuração da mira"""
         self.mira_tamanho = (300, 300)
