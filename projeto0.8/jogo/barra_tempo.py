@@ -7,6 +7,7 @@ class Barra_tempo(Sprite):
 
     def __init__(self, ai_settings, screen):
         super().__init__()
+        self.estado_jogo = None
         self.screen = screen
         self.tamanho_barra =  self.screen.get_rect().right - 320
         self.tamanho_maximo = self.tamanho_barra
@@ -18,18 +19,19 @@ class Barra_tempo(Sprite):
         self.fator_decressimo = 0.0125 # Valor em segundos. Quanto menor mais rapido a barra acaba
 
     def atualiza_barra(self):
-        if self.tamanho_barra > 0:
-            self.tamanho_barra -= 1
-        else:
-            self.barra_vazia = True
+        if not self.estado_jogo.pause:
+            if self.tamanho_barra > 0:
+                self.tamanho_barra -= 1
+            else:
+                self.barra_vazia = True
 
-        self.rect = pygame.Rect(300, 0, self.tamanho_barra, 20)
-        self.rect.centery = 35
+            self.rect = pygame.Rect(300, 0, self.tamanho_barra, 20)
+            self.rect.centery = 35
 
-        if self.tamanho_barra < (self.fator_divisao_barra * 2) and self.tamanho_barra > self.fator_divisao_barra:
-            self.color = ( 255, 255, 0)
-        elif self.tamanho_barra < self.fator_divisao_barra:
-            self.color = ( 200, 0, 0)
+            if self.tamanho_barra < (self.fator_divisao_barra * 2) and self.tamanho_barra > self.fator_divisao_barra:
+                self.color = (255, 255, 0)
+            elif self.tamanho_barra < self.fator_divisao_barra:
+                self.color = ( 200, 0, 0)
 
     def update(self):
         self.atualiza_barra()

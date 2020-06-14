@@ -1,5 +1,6 @@
 import os
 import pygame
+from random import randint
 
 
 class Animacao:
@@ -9,7 +10,8 @@ class Animacao:
         self.screen = screen
         self.imagens = []
         self.set_imagens(pasta_imagens)
-        self.imagen_corrente = 0
+        self.quant_imagens = self.imagens.__len__()
+        self.imagen_corrente = randint(0, self.quant_imagens - 1)
         self.rect_screen = self.screen.get_rect()
         self.rect = pygame.Rect(0, 0, self.largura, self.altura)
         self.is_play = True

@@ -1,5 +1,6 @@
 import sys
 import pygame
+import time
 
 from atualiza_movimento import UpMovVirus
 from painel_vacina import Painel_vacina
@@ -123,30 +124,30 @@ def checar_mouse_motion(event, mira, mira_colisor):
 
 def checar_mouse_botao(event, painel_vacina, miras, viroses, grupo_virose, estado_jogo, pontuacao_placar, ai_settings,
                        barra_tempo, sons):
-    # Verifica se roleta  foi posicionado para cima
+    if not estado_jogo.pause:# Verifica se roleta  foi posicionado para cima
+        if event.button == pygame.MOUSEBUTTONDOWN or event.button == 3:
+            painel_vacina.vacina_selecionada += 1
+            sons.troca_vacinas.play()
+        elif event.button == pygame.MOUSEMOTION:
+            painel_vacina.vacina_selecionada -= 1
+            sons.troca_vacinas.play()
+        elif event.button == pygame.BUTTON_LEFT:
+            sons.click.play()
+            if painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina1'):
+                check_colision_virus1(miras, grupo_virose[painel_vacina.vacinas.index('vacina1') - 1], estado_jogo,
+                                  pontuacao_placar, ai_settings, barra_tempo)
+            elif painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina2'):
+                check_colision_virus2(miras, grupo_virose[painel_vacina.vacinas.index('vacina2') - 1], estado_jogo,
+                                  pontuacao_placar, ai_settings, barra_tempo)
+            elif painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina3'):
+                check_colision_virus3(miras, grupo_virose[painel_vacina.vacinas.index('vacina3') - 1], estado_jogo,
+                                  pontuacao_placar, ai_settings, barra_tempo)
+            elif painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina4'):
+                check_colision_virus4(miras, grupo_virose[painel_vacina.vacinas.index('vacina4') - 1], estado_jogo,
+                                  pontuacao_placar, ai_settings, barra_tempo)
+        pontuacao_placar.inicia_pontos()
+        painel_vacina.vacina_selecionada %= 4
 
-    if event.button == pygame.MOUSEBUTTONDOWN or event.button == 3:
-        painel_vacina.vacina_selecionada += 1
-        sons.troca_vacinas.play()
-    elif event.button == pygame.MOUSEMOTION:
-        painel_vacina.vacina_selecionada -= 1
-        sons.troca_vacinas.play()
-    elif event.button == pygame.BUTTON_LEFT:
-        sons.click.play()
-        if painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina1'):
-            check_colision_virus1(miras, grupo_virose[painel_vacina.vacinas.index('vacina1') - 1], estado_jogo,
-                                  pontuacao_placar, ai_settings, barra_tempo)
-        elif painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina2'):
-            check_colision_virus2(miras, grupo_virose[painel_vacina.vacinas.index('vacina2') - 1], estado_jogo,
-                                  pontuacao_placar, ai_settings, barra_tempo)
-        elif painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina3'):
-            check_colision_virus3(miras, grupo_virose[painel_vacina.vacinas.index('vacina3') - 1], estado_jogo,
-                                  pontuacao_placar, ai_settings, barra_tempo)
-        elif painel_vacina.vacina_selecionada == painel_vacina.vacinas.index('vacina4'):
-            check_colision_virus4(miras, grupo_virose[painel_vacina.vacinas.index('vacina4') - 1], estado_jogo,
-                                  pontuacao_placar, ai_settings, barra_tempo)
-    pontuacao_placar.inicia_pontos()
-    painel_vacina.vacina_selecionada %= 4
 
 
 def check_events(ai_settings, screen, mira, mira_colisor, painel_vacina, miras, viroses, grupos_viroses, estado_jogo,
@@ -171,7 +172,8 @@ def check_events(ai_settings, screen, mira, mira_colisor, painel_vacina, miras, 
 
 
 def update_screen(ai_settings, screen, mira, painel_vacina, viroses, miras, background, pontuacao_placar, barra_tempo,
-                  play_botao, ranking_botao):
+                  play_botao, ranking_botao, ranking_bd, pause_botao):
+
     """Atualiza imagen na tela"""
     screen.fill(ai_settings.bg_color)
     if ai_settings.background_visivel:
@@ -183,6 +185,7 @@ def update_screen(ai_settings, screen, mira, painel_vacina, viroses, miras, back
         virus.draw_mira()
     barra_tempo.desenha_barra(screen)
     pontuacao_placar.mostra_pontos()
+    pause_botao.draw_botao()
     mira.blitme()
     painel_vacina.desenha_painel_vacina(ai_settings, screen)
 
@@ -207,10 +210,16 @@ def update_logica(ai_settings, viroses, painel_vacina, barra_tempo, mira, estado
 
 
 def mostra_tela_game_over(screen, estado_jogo, play_botao, ranking_botao):
+    pygame.mouse.set_visible(True)
     play_botao.is_visivel = True
     screen.fill((200, 100, 100), screen.get_rect())
+    play_botao.ativo = True
+    ranking_botao.ativo = True
+    ranking_botao.is_visivel = True
     if play_botao.is_visivel:
         play_botao.draw_botao()
+    if ranking_botao.is_visivel:
+        ranking_botao.draw_botao()
     centery = screen.get_rect().centery - 80
     desenha_texto.texto(screen, "FIM DE JOGO", (screen.get_rect().centerx, centery), (255, 0, 0), 100)
     desenha_texto.texto(screen, "pontos: " + str(estado_jogo.pontos), (screen.get_rect().centerx, centery + 100),
@@ -219,17 +228,21 @@ def mostra_tela_game_over(screen, estado_jogo, play_botao, ranking_botao):
 
 def is_fim_jogo(barra_tempo, estado_jogo, ranking_bd, screen, play_botao, ranking_botao):
     if barra_tempo.barra_vazia:
+        barra_tempo.barra_vazia = False
         if estado_jogo.jogo_estado:
+            mostra_tela_game_over(screen, estado_jogo, play_botao, ranking_botao)
+            pygame.display.flip()
             ranking_bd.add_score( estado_jogo.pontos)  # <-----------
+            # Exibe a pontuação por 5 segundos
+            time.sleep(5)
         estado_jogo.jogo_estado = False
-        mostra_tela_game_over(screen, estado_jogo, play_botao, ranking_botao)
         # ranking_tela(ranking_bd, screen)
         # sys.exit()
 
 
 # Tela de ranking
 
-def ranking_tela(ranking_bd, screen, ai_settings):
+def ranking_tela(ranking_bd, screen, ai_settings, play_botao, ranking_botao):
     screen.fill((40, 40, 40), screen.get_rect())
     background = pygame.image.load('imagens/background/ranking_tela.jpg')
     rect = pygame.Rect(0 , 0, ai_settings.screen_width, ai_settings.screen_height  )#Inconsistencia
@@ -237,6 +250,9 @@ def ranking_tela(ranking_bd, screen, ai_settings):
     screen.blit(background, rect)
     rank = ranking_bd.get_ranking()
     desenha_texto.texto(screen, "Ranking", (screen.get_rect().centerx, 60), (0, 255, 0), 100)
+
+    play_botao.draw_botao()
+    ranking_botao.draw_botao()
     i = 1
     for posicao in rank:
         if i > 8:
@@ -244,7 +260,7 @@ def ranking_tela(ranking_bd, screen, ai_settings):
         desenha_texto.texto(screen, str(i) + ": " + str(posicao) + "   " + rank[posicao],
                             (screen.get_rect().centerx, (i * 50) + 120), (0, 0, 0), 50)
         i += 1
-    print('Posição: ', rank)
+    pygame.display.flip()
 
 
 def check_buttons(estado_jogo, play_botao, mouse_x, mouse_y, atualiza_movimento, atualiza_barra_tempo,

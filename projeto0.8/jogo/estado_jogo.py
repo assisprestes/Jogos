@@ -15,6 +15,7 @@ class EstadoJogo():
         self.barra_tempo = barra_tempo
         self.pontuacao = None
         self.jogo_estado = False
+        self.pause = False
 
     def set_grupo_viroses(self,grupo_viroses):
         self.grupo_viroses = grupo_viroses

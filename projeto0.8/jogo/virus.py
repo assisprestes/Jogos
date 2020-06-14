@@ -72,10 +72,10 @@ class Virus(Sprite):
         elif self.rect.centerx > self.screen.get_rect().bottomright[0]:
             self.update_direcao(5, 7)
             #colide cima
-        elif self.rect.centery < 0:
+        elif self.rect.centery < 100:
             self.update_direcao(2, 6)
             #colide embaixo
-        elif self.rect.centery > self.screen.get_rect().bottomright[1]:
+        elif self.rect.centery > self.screen.get_rect().bottomright[1] - 100:
             self.update_direcao(0, 2)
 
     def update_direcao(self, valor_minimo, valor_maximo):
@@ -83,6 +83,7 @@ class Virus(Sprite):
         self.direcao = randint(valor_minimo, valor_maximo)
 
     def mover(self):
+        if not self.estado_jogo.pause:
             # cima
             if self.direcao == self.CIMA:
                 self.rect.centery -= self.speed

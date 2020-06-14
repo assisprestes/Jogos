@@ -36,4 +36,4 @@ class Settings:
         self.speed1 = 2#  Fator do vírus azul
         self.speed2 = 1#  Fator do vírus amarelo
         self.speed3 = 3 # Fator vírus marrom
-        self.speed4 = 2 # Fator do vírus verde
+        self.speed4 = 4 # Fator do vírus verde
