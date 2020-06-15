@@ -46,7 +46,7 @@ class Jogo():
         self.mira_colisor = Mira_colisor(self.ai_settings, self.screen)
         self.miras.add(self.mira_colisor)
 
-        pygame.display.set_caption('Xo doenca.')
+        pygame.display.set_caption('VAC')
         # Define background
         self.background = pygame.image.load(self.ai_settings.background_path)
         self.background = pygame.transform.scale(self.background, (self.ai_settings.screen_width + 500, self.ai_settings.screen_height))

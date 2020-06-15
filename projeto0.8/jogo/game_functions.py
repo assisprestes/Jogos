@@ -244,7 +244,7 @@ def is_fim_jogo(barra_tempo, estado_jogo, ranking_bd, screen, play_botao, rankin
 
 def ranking_tela(ranking_bd, screen, ai_settings, play_botao, ranking_botao):
     screen.fill((40, 40, 40), screen.get_rect())
-    background = pygame.image.load('imagens/background/ranking_tela.jpg')
+    background = pygame.image.load('imagens/background/ranking_tela.png')
     rect = pygame.Rect(0 , 0, ai_settings.screen_width, ai_settings.screen_height  )#Inconsistencia
     rect.centerx = 650#int(screen.get_rect()[2]/2)
     screen.blit(background, rect)
